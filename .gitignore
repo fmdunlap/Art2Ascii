@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# Directories & output
+input/
+bin/
+A2A
+output.txt

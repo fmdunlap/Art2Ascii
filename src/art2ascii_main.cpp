@@ -22,11 +22,7 @@ int main(int argc, char** argv) {
 		img.set_resolution(atoi(argv[3]));
 	}
 
-	//img.init();
-
-	std::string output = img.get_image_ascii();
-
-	img.print_ascii_to_file(output_filepath, output);
+	img.print_ascii_to_file(output_filepath);
 
 	return 0;
 }
