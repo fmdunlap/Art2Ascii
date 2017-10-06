@@ -6,8 +6,9 @@
 #include <string>
 using namespace cimg_library;
 
+std::string ascii_darkness_string = "@%#*+=-:. ";
 
-
+int MAX_BRIGHTNESS = 255;
 
 int main(int argc, char** argv) {
 	if(argc != 3 && argc != 4){
@@ -26,7 +27,7 @@ int main(int argc, char** argv) {
 	char* input_filepath = argv[1];
 	char* output_filepath = argv[2];
 
-	CImg<unsigned char> image(argv[1]);
+	CImg<unsigned char> image(input_filepath);
 
 	std::string output = get_image_ascii(image, resolution);
 
@@ -43,15 +44,7 @@ std::string get_image_ascii(CImg<unsigned char> img, int res){
 		for(int col = 0; col < img.width(); col += res){
 
 			int avg = compute_block_average(img, col, row, res);
-			if(avg == 255 || avg == 0){
-				ascii_string += " ";
-			} else if(avg > 150){
-				ascii_string += "@";
-			} else if(avg > 60){
-				ascii_string += "*";
-			} else {
-				ascii_string += " ";
-			}
+			ascii_string += get_char_by_brightness(avg);
 		}
 		ascii_string += '\n';
 	}
@@ -60,10 +53,10 @@ std::string get_image_ascii(CImg<unsigned char> img, int res){
 
 }
 
-char get_char_by_brightness(int brightnes){
-	switch(brightness){
-		
-	}
+char get_char_by_brightness(int brightness){
+
+	double index = (((double)brightness)*((double)ascii_darkness_string.size()))/((double) MAX_BRIGHTNESS) -.25;
+	return ascii_darkness_string.at((int)index);
 }
 
 int compute_block_average(CImg<unsigned char> img, int start_x, int start_y, int res){
@@ -73,8 +66,8 @@ int compute_block_average(CImg<unsigned char> img, int start_x, int start_y, int
 	for(int row = start_y; row < start_y + res; row++){
 		for(int col = start_x; col < start_x + res; col++){
 			const int
-			valR = img(col,row,0), // Read red value at coordinates (10,10).
-			valG = img(col,row,1), // Read green value at coordinates (10,10)
+			valR = img(col,row,0),
+			valG = img(col,row,1),
 			valB = img(col,row,2),
 			pixel_avg = (valR + valG + valB)/3;   // Read blue value at coordinates (10,10) (Z-coordinate can be omitted).
 			average = (pixel_avg + (n*average)) / (n+1);
