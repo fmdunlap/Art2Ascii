@@ -2,16 +2,23 @@
 #include "image.h"
 #include <fstream>
 
+//Constructor from path of file-to-be-input.
 image::image(char* file_name){
 
 	raw_image = new cimg_library::CImg<unsigned char>(file_name);;
+	resolution = 6;
+}
 
+image::~image(){
+	delete raw_image;
 }
 
 
-std::string image::get_image_ascii(int res){
+std::string image::get_image_ascii(){
 
 	std::string ascii_string = "";
+
+	int res = this->get_resolution();
 
 	for(int row = 0; row < this->raw_image->height(); row += res){
 		for(int col = 0; col < this->raw_image->width(); col += res){
@@ -33,18 +40,29 @@ char image::get_char_by_brightness(int brightness){
 	return this->ascii_darkness_string.at((int)index);
 }
 
+void image::set_resolution(int res){
+	this->resolution = res;
+}
+
+int image::get_resolution(){
+	return this->resolution;
+}
+
 int image::compute_block_average(int start_x, int start_y, int res){
 	int average = 0;
 	int n = 0;
 
-	for(int row = start_y; row < start_y + res; row++){
-		for(int col = start_x; col < start_x + res; col++){
+	//Need to add fast-bounds checking
+
+	for(int row = start_y; row < start_y + res && row < this->raw_image->height(); row++){
+		for(int col = start_x; col < start_x + res && col < this->raw_image->width(); col++){
 			const int
-			valR = this->raw_image->atXYZ(col,row,0),
-			valG = this->raw_image->atXYZ(col,row,1),
-			valB = this->raw_image->atXYZ(col,row,2),
+			valR = (int)(*this->raw_image)(col,row,0),
+			valG = (int)(*this->raw_image)(col,row,1),
+			valB = (int)(*this->raw_image)(col,row,2),
 			pixel_avg = (valR + valG + valB)/3;   // Read blue value at coordinates (10,10) (Z-coordinate can be omitted).
 			average = (pixel_avg + (n*average)) / (n+1);
+			n++;
 		}
 	}
 

@@ -4,18 +4,11 @@
 #include <string>
 #include "image.h"
 
+
 int main(int argc, char** argv) {
 	if(argc != 3 && argc != 4){
 		std::cout << "USAGE: ./Art2Ascii /path/to/input /path/to/output (resolution)\n";
 		return -1;
-	}
-
-	int resolution;
-
-	if(argc == 4){
-		resolution = atoi(argv[3]);
-	} else {
-		resolution = 6;
 	}
 
 	char* input_filepath = argv[1];
@@ -23,7 +16,15 @@ int main(int argc, char** argv) {
 
 	image img(input_filepath);
 
-	std::string output = img.get_image_ascii(resolution);
+	//Sets up the image to have either the default resolution,
+	//or the user specified resolution.
+	if(argc == 4){
+		img.set_resolution(atoi(argv[3]));
+	}
+
+	//img.init();
+
+	std::string output = img.get_image_ascii();
 
 	img.print_ascii_to_file(output_filepath, output);
 
