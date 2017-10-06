@@ -18,7 +18,7 @@ DCOMPILE_FLAGS = -D DEBUG
 # Add additional include paths
 INCLUDES = -I ./libs
 # General linker settings
-LINK_FLAGS = -pthread
+LINK_FLAGS = -lpthread -lX11
 # Additional release-specific linker settings
 RLINK_FLAGS =
 # Additional debug-specific linker settings
