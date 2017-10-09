@@ -4,10 +4,18 @@
 const int MAX_BRIGHTNESS = 255;
 const int DEFAULT_RESOLUTION = 6;
 
-class image{
+enum PROCESS_TYPE{
+	standard,
+	color,
+	edge,
+	transparency
+};
 
+class image{
 public:
+
 	image(char* filename);
+	image(char* filename, PROCESS_TYPE pt);
 	~image();
 
 	/*Computes the average brightness of a 'block'
@@ -16,6 +24,11 @@ public:
 	  and extends to x+resolution, and y+resolution.
 	*/
 	int compute_block_average(int start_x, int start_y, int res);
+
+	/*
+		Computes the average distance from a given color in a block.
+	*/
+	int compute_block_color_distance(int start_x, int start_y, int res, int* color_values);
 
 	/*Returns character in ascii_darkness_string that should be assosciated with
 	the given brightness.
@@ -44,8 +57,10 @@ public:
 	std::string get_image_ascii();
 
 private:
+	int* base_color;
 	int resolution;
 	cimg_library::CImg<unsigned char>* raw_image;
 	std::string ascii_darkness_string = "@#%*+=-:. ";
 	std::string ascii_output_string;
+	PROCESS_TYPE pType;
 };
